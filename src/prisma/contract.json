@@ -4,39 +4,59 @@
   "target": "postgres",
   "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
   "roots": {
-    "Post": {
-      "model": "Post",
+    "Projeto": {
+      "model": "Projeto",
       "namespace": "public"
     },
-    "User": {
-      "model": "User",
+    "Task": {
+      "model": "Task",
+      "namespace": "public"
+    },
+    "Usuario": {
+      "model": "Usuario",
       "namespace": "public"
     }
   },
   "domain": {
     "namespaces": {
       "public": {
+        "enum": {
+          "Status": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "pendente",
+                "value": "pendente"
+              },
+              {
+                "name": "em_andamento",
+                "value": "em_andamento"
+              },
+              {
+                "name": "concluida",
+                "value": "concluida"
+              },
+              {
+                "name": "atrasada",
+                "value": "atrasada"
+              }
+            ]
+          }
+        },
         "models": {
-          "Post": {
+          "Projeto": {
             "fields": {
-              "authorId": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/int4@1",
-                  "kind": "scalar"
-                }
-              },
-              "content": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
               "createdAt": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "descrição": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
@@ -47,65 +67,191 @@
                   "kind": "scalar"
                 }
               },
-              "title": {
+              "nome": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
-              "updatedAt": {
+              "prazo": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/date-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "userId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/int4@1",
                   "kind": "scalar"
                 }
               }
             },
             "relations": {
-              "author": {
+              "tasks": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "projetoId"
+                  ]
+                },
+                "to": {
+                  "model": "Task",
+                  "namespace": "public"
+                }
+              },
+              "usuario": {
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
                   "localFields": [
-                    "authorId"
+                    "userId"
                   ],
                   "targetFields": [
                     "id"
                   ]
                 },
                 "to": {
-                  "model": "User",
+                  "model": "Usuario",
                   "namespace": "public"
                 }
               }
             },
             "storage": {
               "fields": {
-                "authorId": {
-                  "column": "authorId"
-                },
-                "content": {
-                  "column": "content"
-                },
                 "createdAt": {
                   "column": "createdAt"
+                },
+                "descrição": {
+                  "column": "descrição"
                 },
                 "id": {
                   "column": "id"
                 },
-                "title": {
-                  "column": "title"
+                "nome": {
+                  "column": "nome"
                 },
-                "updatedAt": {
-                  "column": "updatedAt"
+                "prazo": {
+                  "column": "prazo"
+                },
+                "userId": {
+                  "column": "userId"
                 }
               },
               "namespaceId": "public",
-              "table": "Post"
+              "table": "Projeto"
             }
           },
-          "User": {
+          "Task": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "descrição": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "nome": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "prazo": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/date-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "projetoId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "Status",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              }
+            },
+            "relations": {
+              "projeto": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "projetoId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Projeto",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "descrição": {
+                  "column": "descrição"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "nome": {
+                  "column": "nome"
+                },
+                "prazo": {
+                  "column": "prazo"
+                },
+                "projetoId": {
+                  "column": "projetoId"
+                },
+                "status": {
+                  "column": "status"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Task"
+            }
+          },
+          "Usuario": {
             "fields": {
               "createdAt": {
                 "nullable": false,
@@ -128,22 +274,15 @@
                   "kind": "scalar"
                 }
               },
-              "name": {
-                "nullable": true,
+              "nome": {
+                "nullable": false,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
-              "updatedAt": {
+              "senha": {
                 "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "kind": "scalar"
-                }
-              },
-              "username": {
-                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
@@ -151,18 +290,18 @@
               }
             },
             "relations": {
-              "posts": {
+              "projetos": {
                 "cardinality": "1:N",
                 "on": {
                   "localFields": [
                     "id"
                   ],
                   "targetFields": [
-                    "authorId"
+                    "userId"
                   ]
                 },
                 "to": {
-                  "model": "Post",
+                  "model": "Projeto",
                   "namespace": "public"
                 }
               }
@@ -178,18 +317,15 @@
                 "id": {
                   "column": "id"
                 },
-                "name": {
-                  "column": "name"
+                "nome": {
+                  "column": "nome"
                 },
-                "updatedAt": {
-                  "column": "updatedAt"
-                },
-                "username": {
-                  "column": "username"
+                "senha": {
+                  "column": "senha"
                 }
               },
               "namespaceId": "public",
-              "table": "User"
+              "table": "Usuario"
             }
           }
         }
@@ -201,18 +337,8 @@
       "public": {
         "entries": {
           "table": {
-            "Post": {
+            "Projeto": {
               "columns": {
-                "authorId": {
-                  "codecId": "pg/int4@1",
-                  "nativeType": "int4",
-                  "nullable": false
-                },
-                "content": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": true
-                },
                 "createdAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "default": {
@@ -220,6 +346,11 @@
                     "kind": "function"
                   },
                   "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "descrição": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
                   "nullable": false
                 },
                 "id": {
@@ -231,14 +362,19 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
-                "title": {
+                "nome": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
                 },
-                "updatedAt": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "nativeType": "timestamptz",
+                "prazo": {
+                  "codecId": "pg/date-string@1",
+                  "nativeType": "date",
+                  "nullable": true
+                },
+                "userId": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
                   "nullable": false
                 }
               },
@@ -246,27 +382,27 @@
                 {
                   "source": {
                     "columns": [
-                      "authorId"
+                      "userId"
                     ],
                     "namespaceId": "public",
-                    "tableName": "Post"
+                    "tableName": "Projeto"
                   },
                   "target": {
                     "columns": [
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "User"
+                    "tableName": "Usuario"
                   }
                 }
               ],
               "indexes": [
                 {
                   "columns": [
-                    "authorId"
+                    "userId"
                   ],
-                  "name": "Post_authorId_idx_e47547ed",
-                  "prefix": "Post_authorId_idx",
+                  "name": "Projeto_userId_idx_a489d58a",
+                  "prefix": "Projeto_userId_idx",
                   "unique": false
                 }
               ],
@@ -277,7 +413,106 @@
               },
               "uniques": []
             },
-            "User": {
+            "Task": {
+              "checks": [
+                {
+                  "expression": "\"status\" IN ('pendente', 'em_andamento', 'concluida', 'atrasada')",
+                  "name": "Task_status_check_3428e770",
+                  "prefix": "Task_status_check"
+                }
+              ],
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "descrição": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "nome": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "prazo": {
+                  "codecId": "pg/date-string@1",
+                  "nativeType": "date",
+                  "nullable": true
+                },
+                "projetoId": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "pendente"
+                  },
+                  "nativeType": "text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "Status",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "projetoId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Task"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Projeto"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "projetoId"
+                  ],
+                  "name": "Task_projetoId_idx_1539af84",
+                  "prefix": "Task_projetoId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "Usuario": {
               "columns": {
                 "createdAt": {
                   "codecId": "pg/timestamptz-string@1",
@@ -302,20 +537,15 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
-                "name": {
+                "nome": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
-                  "nullable": true
-                },
-                "updatedAt": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "nativeType": "timestamptz",
                   "nullable": false
                 },
-                "username": {
+                "senha": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
-                  "nullable": true
+                  "nullable": false
                 }
               },
               "foreignKeys": [],
@@ -333,50 +563,24 @@
                 }
               ]
             }
+          },
+          "valueSet": {
+            "Status": {
+              "kind": "valueSet",
+              "values": [
+                "pendente",
+                "em_andamento",
+                "concluida",
+                "atrasada"
+              ]
+            }
           }
         },
         "id": "public",
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "91e7f9f035806fa2789a4d726ef7724cad434fd6b00014d47ebf12d6e6bb784e"
-  },
-  "execution": {
-    "executionHash": "796fa270d853489edb1c3e0d332d596412292127a259b856b495a498c752882a",
-    "mutations": {
-      "defaults": [
-        {
-          "onCreate": {
-            "id": "timestampNow",
-            "kind": "generator"
-          },
-          "onUpdate": {
-            "id": "timestampNow",
-            "kind": "generator"
-          },
-          "ref": {
-            "column": "updatedAt",
-            "namespace": "public",
-            "table": "Post"
-          }
-        },
-        {
-          "onCreate": {
-            "id": "timestampNow",
-            "kind": "generator"
-          },
-          "onUpdate": {
-            "id": "timestampNow",
-            "kind": "generator"
-          },
-          "ref": {
-            "column": "updatedAt",
-            "namespace": "public",
-            "table": "User"
-          }
-        }
-      ]
-    }
+    "storageHash": "62c7fe687e3c0197c1b8fb83bba5eaf5e6cd2da5e0d6b2e7a0ac6a55d30e4daf"
   },
   "capabilities": {
     "postgres": {
