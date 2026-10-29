@@ -33,5 +33,9 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "migrations/app/20261013T0017_initial_schema/migration.ts",
+    "migrations/app/20261029T0029_contract_hash_transition/migration.ts"
+  ]
 }
